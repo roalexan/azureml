@@ -3,9 +3,20 @@
 Learn how to use Azure Machine Learning services for experimentation and model management.
 
 - Browse: [how-to-use-azureml][how-to-use-azureml]
-   - Set up [DSVM][setup-dsvm]
+   - Prerequisites
+      - Azure subscription
+      - Resource Group
+         - Type: ``**<your name>**``
+      - AML workspace
+         - Type: **azure machine learning**
+         - Click: **Machine Learning service workspace** > **Create**
+         - Type: ``<your AML workspace name>``
+         - Select: ``<your subscription>``
+         - Select: ``<your resource group>``
+         - Select: ``<your location>``
+         - Click: **Create**
+   - Set up [DSVM][setup-dsvm] (bootstrap environment)
       - Create DSVM
-         - Prerequisites: an Azure subscription and a resource group
          - Browse: **portal.azure.com**
          - Select: ``<your resource group>``
          - Click: **+ Add**
@@ -44,8 +55,51 @@ Learn how to use Azure Machine Learning services for experimentation and model m
             - SSH into DSVM
          - Browse: https://localhost:8000
          - Login using VM's username/password
+      - Run Configuration Notebook
+         - Click: **AzureML** > **configuration.ipynb**
+         - Run: first cell (verify SDK version)
+            - Should see something like version 1.0.2
+         - From SSH command line:
+            - Type: **az login**
+               - Copy link and paste in code
+               - Login
+            - Type: **az provider show -n Microsoft.ContainerInstance -o table**
+            - If not registered, type: **az provider register -n Microsoft.ContainerInstance**
+         - Replace default values in second cell and run
+         - Run: third cell to access workspace
+         - Run: fifth cell to create CPU cluster (skip fourth cell, which creates AML workspace. Also skip sixth cell, which created GPU cluster)
+      - Run batch scoring notebook
+         - Click: **AzureML** > **how-to-use-azureml** > **machine-learning-pipelines** > **pipeline-batch-scoring** > **pipeline-batch-scoring.ipynb**
+         - Run: first cell for imports
+         - Run: second cell for settings
+         - Run: third cell to create data store
+         - Run: fourth cell to create default data store
+         - Run: fifth cell to configure data references
+         - Run: sixth cell to create and attach compute targets
+         - Run: seventh cell to create directory for model
+         - Run: eighth cell to download model as tar
+         - Run: ninth cell to register model with workspace
+         - Run: tenth cell to specify environment to run the script
+         - Run: eleventh cell to specify parameters
+         - Run: twelfth cell to create the pipeline step
+         - Run: thirteenth cell to run the pipeline
+         - Run: fourteenth cell to monitor the run
+         - Run: fifteenth cell to wait for completion (takes about 20 minutes)
+         - Run: sixteenth cell to download output
+         - Run: seventeenth cell to sample the output
+         - Run: eighteenth cell to create a published pipeline
+         - Run: nineteenth cell to get AAD token
+         - Run: twentieth cell to run published pipeline (with specified batch size)
+         - Run: twenty first cell to monitor the new run (takes about 11 minutes)
+      - Call from REST Client
+         - Open: RESTClient Firefox plugin
+         - Method: POST
+         - URL: ``<your endpoint>``
+         - Header: Key: **Authorization**, Value: ``<your bearer token>``
+         - Header: Key: **Content-Type**, Value: **application/json**
+         - Body: {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
+         - Click: **Send**
 
-   - Set up AML Workspace
 
 <!-- links -->
 
