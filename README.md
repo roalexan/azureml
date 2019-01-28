@@ -2,7 +2,7 @@
 
 Learn how to use Azure Machine Learning services for experimentation and model management.
 
-- Browse: [how-to-use-azureml][how-to-use-azureml]
+- Browse: [how-to-use-azureml][how-to-use-azureml] > [machine-learning-pipelines][machine-learning-pipelines] > [pipeline-batch-scoring][pipeline-batch-scoring]
    - Prerequisites
       - Azure subscription
       - Resource Group
@@ -99,9 +99,44 @@ Learn how to use Azure Machine Learning services for experimentation and model m
          - Header: Key: **Content-Type**, Value: **application/json**
          - Body: {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
          - Click: **Send**
-
+      - Schedule using ADF
+         - Create ADF
+            - Browse: **portal.azure.com**
+            - Select: ``<your resource group>``
+            - Click: **+ Add**
+            - Type: **data factory**
+            - Click: **Data Factory** > **Create**
+            - Type: Name: ``<your name>``
+            - Select: Subscription: ``<your subscription>``
+            - Select: Resource Group: **Use existing**
+            - Select: ``<your resource group>``
+            - Select: Version: **V2**
+            - Select: Location: **East US**
+            - Click: **Create**
+         - Configure ADF
+            - Click: **Author & Monitor**
+            - Click: **Create pipeline**
+            - Expand: **General**
+            - Drag: **Web**
+            - Click: **Settings**
+            - Paste: URL: ``<your endpoint>``
+            - Select: Method: **POST**
+            - Click: Headers: + New: NAME: **Authorization**, VALUE: ``<your bearer token>``
+            - Click: Headers: + New: NAME: **Content-Type**, VALUE: **application/json**
+            - Paste: Body: {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
+            - Click: **Validate**
+            - Click: **Publish All**
+            - Click: **Trigger** > **Trigger Now**
+      - Schedule using AzureFunction
+         - Browse: **portal.azure.com**
+         - Select: ``<your resource group>``
+         - Click: **+ Add**
+         - Type: **function**
 
 <!-- links -->
 
 [how-to-use-azureml]: https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml
+[machine-learning-pipelines]: https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml/machine-learning-pipelines
+[pipeline-batch-scoring]: [https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml/machine-learning-pipelines]
 [setup-dsvm]: https://docs.microsoft.com/en-us/azure/machine-learning/service/how-to-configure-environment#dsvm
+[functions-create-scheduled-function][https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-scheduled-function]
