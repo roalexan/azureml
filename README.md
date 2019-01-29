@@ -127,11 +127,93 @@ Learn how to use Azure Machine Learning services for experimentation and model m
             - Click: **Validate**
             - Click: **Publish All**
             - Click: **Trigger** > **Trigger Now**
-      - Schedule using AzureFunction
-         - Browse: **portal.azure.com**
-         - Select: ``<your resource group>``
-         - Click: **+ Add**
-         - Type: **function**
+      - Schedule using [AzureFunction][functions-create-first-function-python]
+         - Prerequisites
+            - To build and test locally
+               - Install [Python 3.6][install-python]
+               - Install [Azure Functions Core Tools]
+                  - Install [.NET Core 2.x SDK for Windows][.NET Core 2.x SDK for Windows]
+                  - Install [Node.js][Node.js]
+                  - Install Core Tools package
+                      npm install -g azure-functions-core-tools
+            - to publish and run in Azure
+               - Install the [Azure CLI][Azure CLI]
+          - Create and activate a virtual environment
+             - Type:
+                ```powershell
+                py -3.6 -m venv .env
+                .env\scripts\activate
+                ```
+         - Create a local Functions project
+            - Type: func init MyFunctionProj
+            - Mouse down and select: **python (preview)**
+            - cd MyFunctionProj
+         - Echo name function
+            - Create a function
+               - Type: func new
+               - Choose template: **HTTP trigger**
+               - Choose Function name: **HTTP Trigger**
+            - Run the functions locally
+               - Type: **func host start** (remember to do this in the function projects folder)
+               - Copy URL and paste in browser:
+               ```
+               http://localhost:7071/api/HttpTrigger?name=<yourname>
+               ```
+            - Deploy to Azure
+               - Type: **az login**
+               - Create a Resource Group
+               - Create an Azure Storage account
+                  Type:
+                  ```
+                  az storage account create --name <storage name> --location <location> --resource-group <resource group name> --sku Standard_LRS
+                  ```
+              - Create a Python function app running on Linux
+                 Type:
+                 ```
+                 az functionapp create --resource-group myResourceGroup --os-type Linux \
+                 --consumption-plan-location westeurope  --runtime python \
+                 --name <app_name> --storage-account  <storage_name>
+                 ```
+              - Deploy the function app project
+                 Type:
+                 ```
+                 func azure functionapp publish <app_name>
+                 ```
+              - Test the function
+                 Browse:
+                 ```
+                 https://<app_name>.azurewebsites.net/api/MyHttpTrigger?name=<yourname>
+                 ```
+         - CallBatchScoring function
+            - Create a function
+               - Type: func new
+               - Choose template: **HTTP trigger**
+               - Choose Function name: **CallBatchScoring**
+            - Add requests library
+               - Type:
+                  ```
+                  pip install requests
+                  ```
+            - Run the functions locally
+               - Type: **func host start** (remember to do this in the function projects folder)
+               - Copy URL and paste in browser:
+               ```
+               http://localhost:7071/api/CallBatchScoring?name=<yourname>
+               ```
+            - Edit __init__.py
+               ```
+               def main(req: func.HttpRequest) -> func.HttpResponse:
+               logging.info('Python HTTP trigger function processed a request.')
+
+               url = "<your endpoint>"
+               headers = {"Content-Type": "application/json",
+                   "Authorization": "<your token>"}
+               body = {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
+               r = requests.post(url, data=body, headers=headers)
+
+               return func.HttpResponse(r.text)
+               ```
+
 
 <!-- links -->
 
@@ -140,3 +222,10 @@ Learn how to use Azure Machine Learning services for experimentation and model m
 [pipeline-batch-scoring]: [https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml/machine-learning-pipelines]
 [setup-dsvm]: https://docs.microsoft.com/en-us/azure/machine-learning/service/how-to-configure-environment#dsvm
 [functions-create-scheduled-function][https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-scheduled-function]
+[functions-create-first-function-python][https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-function-python]
+[install-python][https://www.python.org/downloads/]
+[install-functions-core-tools][https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#v2]
+[.NET Core 2.x SDK for Windows][https://www.microsoft.com/net/download/windows]
+[Node.js][https://docs.npmjs.com/getting-started/installing-node#osx-or-windows]
+[Azure CLI][https://docs.microsoft.com/cli/azure/install-azure-cli]
+[functions-reference-python][https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python]
