@@ -2,7 +2,13 @@
 
 Learn how to use Azure Machine Learning services for experimentation and model management.
 
-- Browse: [how-to-use-azureml][how-to-use-azureml] > [machine-learning-pipelines][machine-learning-pipelines] > [pipeline-batch-scoring][pipeline-batch-scoring]
+- Browse: [machine-learning][machine-learning] > [machine-learning-service][machine-learning-service] > [samples][samples] > [aml-notebooks][aml-notebooks]
+- Clone repo: 
+   ```
+   git clone https://github.com/Azure/MachineLearningNotebooks.git
+   ```
+
+[how-to-use-azureml][how-to-use-azureml] > [machine-learning-pipelines][machine-learning-pipelines] > [pipeline-batch-scoring][pipeline-batch-scoring]
    - Prerequisites
       - Azure subscription
       - Resource Group
@@ -214,10 +220,12 @@ Learn how to use Azure Machine Learning services for experimentation and model m
                return func.HttpResponse(r.text)
                ```
 
-
 <!-- links -->
 
-[azure-machine-learning]: https://docs.microsoft.com/en-us/azure/machine-learning/
+[machine-learning]: https://docs.microsoft.com/en-us/azure/machine-learning/
+[machine-learning-service]: https://docs.microsoft.com/en-us/azure/machine-learning/service/
+[samples]: https://docs.microsoft.com/en-us/azure/machine-learning/service/samples-notebooks
+[aml-notebooks]: https://aka.ms/aml-notebooks
 [how-to-use-azureml]: https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml
 [machine-learning-pipelines]: https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml/machine-learning-pipelines
 [pipeline-batch-scoring]: https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml/machine-learning-pipelines
