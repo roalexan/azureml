@@ -217,15 +217,16 @@ Learn how to use Azure Machine Learning services for experimentation and model m
 
 <!-- links -->
 
+[azure-machine-learning]: https://docs.microsoft.com/en-us/azure/machine-learning/
 [how-to-use-azureml]: https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml
 [machine-learning-pipelines]: https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml/machine-learning-pipelines
-[pipeline-batch-scoring]: [https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml/machine-learning-pipelines]
+[pipeline-batch-scoring]: https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml/machine-learning-pipelines
 [setup-dsvm]: https://docs.microsoft.com/en-us/azure/machine-learning/service/how-to-configure-environment#dsvm
-[functions-create-scheduled-function][https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-scheduled-function]
-[functions-create-first-function-python][https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-function-python]
-[install-python][https://www.python.org/downloads/]
-[install-functions-core-tools][https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#v2]
-[.NET Core 2.x SDK for Windows][https://www.microsoft.com/net/download/windows]
-[Node.js][https://docs.npmjs.com/getting-started/installing-node#osx-or-windows]
-[Azure CLI][https://docs.microsoft.com/cli/azure/install-azure-cli]
-[functions-reference-python][https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python]
+[functions-create-scheduled-function]: https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-scheduled-function
+[functions-create-first-function-python]: https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-function-python
+[install-python]: https://www.python.org/downloads/
+[install-functions-core-tools]: https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#v2
+[.NET Core 2.x SDK for Windows]: https://www.microsoft.com/net/download/windows
+[Node.js]: https://docs.npmjs.com/getting-started/installing-node#osx-or-windows
+[Azure CLI]: https://docs.microsoft.com/cli/azure/install-azure-cli
+[functions-reference-python]: https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python
