@@ -2,8 +2,9 @@
 
 Learn how to use Azure Machine Learning services for experimentation and model management.
 
-- Browse: [machine-learning][machine-learning] > [machine-learning-service][machine-learning-service] > [samples][samples] > [aml-notebooks][aml-notebooks]
-- Clone repo: 
+[machine-learning][machine-learning] > [machine-learning-service][machine-learning-service] > [samples][samples] > [aml-notebooks][aml-notebooks]
+
+Clone repo: 
    ```
    git clone https://github.com/Azure/MachineLearningNotebooks.git
    ```
