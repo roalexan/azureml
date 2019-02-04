@@ -1,10 +1,98 @@
+# Creating real-time scoring pipeline
+
+## Prerequisites
+
+- An Azure subscription
+- A resource group
+
+## Create dev environment
+
+### Create Windows Data Science Virtual Machine (DSVM)
+- Browse: **portal.azure.com**
+- Select: ``your resource group``
+- Click: **+ Add**
+- Type: **dsvm**
+- Select: **Data Science Virtual Machine - Windows 2016**
+- Select: Subscription: ``<your subscription>``
+- Select: Resource Group: ``<your resource group>``
+- Type: Virtual machine name: ``<your vm name>``
+- Select: Region: ``<your region>``
+- Type: Username: ``<your user name>``
+- Type: Password: ``<your password>``
+- Click: **Review + create** > **Create**
+
+or
+
+### Create Linux Data Science Virtual Machine (DSVM)
+- Browse: **portal.azure.com**
+- Select: ``<your resource group>``
+- Click: **+ Add**
+- Type: **dsvm**
+- Click: **Data Science Virtual Machine for Linux (Ubuntu)** > **Create**
+- Select: Subscription: ``<your subscription>``
+- Select: Resource Group: ``<your resource group>``
+- Type: Virtual machine name: ``<your vm name>``
+- Select: Region: ``<your region>``
+- Select: **Authentication**
+- Type: **Password**
+- Type: Username: ``<your user name>``
+- Type: Password: ``<your password>``
+- Click: **Review + create** > **Create**
+
+## Use dev environment to create and deploy model
+
+### Open Jupyter notebook on Windows DSVM
+
+- Login
+  - Click: ``<your vm>`` > **Connect**
+  - Save: locally
+  - Double click: **<your RDP file>**
+  - Click: **OK** > **Connect**
+  - Click: **More choices**
+  - Select: **Use a different account**
+  - Type: User name: ``<your user name>``
+  - Type: Password: ``<your password>``
+  - Click: **OK** > **Yes**
+- Double click: **Jupyter**
+
+
+or
+
+### Open Jupyter notebook on Linux DSVM
+
+- Setup port forwarding (to access Jupyter Notebook on local browser)
+   - Open: **PuTTY**
+   - Expand: **Connection** > **SSH** > **Tunnels**
+   - Type: Source port: **8000**
+   - Type: Destination: **localhost:8000**
+   - Click: **Add** > **Save**
+   - SSH into DSVM (while open, port forwarding is active)
+- Browse: https://localhost:8000
+- Login using VM's username/password
+
+### Create Azure Machine Learning (AML) workspace
+
+- Expand: **AzureML**
+- Run: first cell (verify SDK version)
+   - Should see something like version 1.0.2
+- From SSH command line:
+   - Type: **az login**
+   - Copy link and paste in code
+   - Login
+  - Type: **az provider show -n Microsoft.ContainerInstance -o table**
+  - If not registered, type: **az provider register -n Microsoft.ContainerInstance**
+- Replace default values in second cell and run
+- Run: third cell to access workspace
+- Run: fifth cell to create CPU cluster (skip fourth cell, which creates AML workspace. Also skip sixth cell, which created GPU cluster)
+
+
 # Getting started with AML
 
 Learn how to use Azure Machine Learning services for experimentation and model management.
 
 [machine-learning][machine-learning] > [machine-learning-service][machine-learning-service] > [samples][samples] > [aml-notebooks][aml-notebooks]
 
-Clone repo: 
+Clone repo:
    ```
    git clone https://github.com/Azure/MachineLearningNotebooks.git
    ```
@@ -18,26 +106,15 @@ Clone repo:
          - Type: **azure machine learning**
          - Click: **Machine Learning service workspace** > **Create**
          - Type: ``<your AML workspace name>``
-         - Select: ``<your subscription>``
-         - Select: ``<your resource group>``
-         - Select: ``<your location>``
-         - Click: **Create**
-   - Set up [DSVM][setup-dsvm] (bootstrap environment)
-      - Create DSVM
-         - Browse: **portal.azure.com**
-         - Select: ``<your resource group>``
-         - Click: **+ Add**
-         - Type: **dsvm**
-         - Click: **Data Science Virtual Machine for Linux (Ubuntu)** > **Create**
-         - Select: ``<your subscription>``
-         - Select: ``<your resource group>``
+         - Select: Subscription: ``<your subscription>``
+         - Select: Resource Group: ``<your resource group>``
          - Type: Virtual machine name: ``<your vm name>``
-         - Select: ``<your vm region>``
-         - Select: **Authentication**
-         - Type: **Password**
+         - Select: Region: ``<your region>``
          - Type: Username: ``<your user name>``
          - Type: Password: ``<your password>``
-         - Click: **Review + create** > **Create**
+         - Click: **Create**
+   - Set up [DSVM][setup-dsvm] (bootstrap environment)
+
       - Setup DSVM
          - SSH into DSVM
          - Clone repo
@@ -62,19 +139,7 @@ Clone repo:
             - SSH into DSVM
          - Browse: https://localhost:8000
          - Login using VM's username/password
-      - Run Configuration Notebook
-         - Click: **AzureML** > **configuration.ipynb**
-         - Run: first cell (verify SDK version)
-            - Should see something like version 1.0.2
-         - From SSH command line:
-            - Type: **az login**
-               - Copy link and paste in code
-               - Login
-            - Type: **az provider show -n Microsoft.ContainerInstance -o table**
-            - If not registered, type: **az provider register -n Microsoft.ContainerInstance**
-         - Replace default values in second cell and run
-         - Run: third cell to access workspace
-         - Run: fifth cell to create CPU cluster (skip fourth cell, which creates AML workspace. Also skip sixth cell, which created GPU cluster)
+
       - Run batch scoring notebook
          - Click: **AzureML** > **how-to-use-azureml** > **machine-learning-pipelines** > **pipeline-batch-scoring** > **pipeline-batch-scoring.ipynb**
          - Run: first cell for imports
