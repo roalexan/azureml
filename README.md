@@ -1,13 +1,29 @@
 # Creating real-time scoring pipeline
 
 ## Prerequisites
-
 - An Azure subscription
 - A resource group
 
-## Create dev environment
+## Terms
+- DSVM = Data Science Virtual Machine
+- AML = Azure Machine Learning
+- ACI = Azure Container Instance
 
-### Create Windows Data Science Virtual Machine (DSVM)
+## Create Dev Environment
+
+### Use ARM Script Locally to Create Windows DSVM
+- TODO
+
+### Use ARM Script Locally to Create Linux DSVM
+- TODO
+
+### Use Python Locally to Create Windows DSVM
+- TODO
+
+### Use Python Locally to Create Linux DSVM
+- TODO
+
+### Use Portal to Create Windows DSVM
 - Browse: **portal.azure.com**
 - Select: ``your resource group``
 - Click: **+ Add**
@@ -23,7 +39,7 @@
 
 or
 
-### Create Linux Data Science Virtual Machine (DSVM)
+### Use Portal to Create Linux DSVM
 - Browse: **portal.azure.com**
 - Select: ``<your resource group>``
 - Click: **+ Add**
@@ -39,14 +55,14 @@ or
 - Type: Password: ``<your password>``
 - Click: **Review + create** > **Create**
 
-## Use dev environment to create and deploy model
+## Open Jupyter Notebook on Dev Environment
 
-### Open Jupyter notebook on Windows DSVM
+### On Windows DSVM
 
 - Login
   - Click: ``<your vm>`` > **Connect**
   - Save: locally
-  - Double click: **<your RDP file>**
+  - Double click: ``<your RDP file>``
   - Click: **OK** > **Connect**
   - Click: **More choices**
   - Select: **Use a different account**
@@ -55,10 +71,9 @@ or
   - Click: **OK** > **Yes**
 - Double click: **Jupyter**
 
-
 or
 
-### Open Jupyter notebook on Linux DSVM
+### On Linux DSVM
 
 - Setup port forwarding (to access Jupyter Notebook on local browser)
    - Open: **PuTTY**
@@ -70,147 +85,97 @@ or
 - Browse: https://localhost:8000
 - Login using VM's username/password
 
-### Create Azure Machine Learning (AML) workspace
+## Create AML workspace
+
+### Using Azure Portal
+
+### Using Jupyter Notebook on Dev Environment
 
 - Expand: **AzureML**
-- Run: first cell (verify SDK version)
-   - Should see something like version 1.0.2
-- From SSH command line:
-   - Type: **az login**
-   - Copy link and paste in code
-   - Login
-  - Type: **az provider show -n Microsoft.ContainerInstance -o table**
-  - If not registered, type: **az provider register -n Microsoft.ContainerInstance**
-- Replace default values in second cell and run
-- Run: third cell to access workspace
-- Run: fifth cell to create CPU cluster (skip fourth cell, which creates AML workspace. Also skip sixth cell, which created GPU cluster)
+- Click: **configuration.ipynb**
+- Run: first cell to verify SDK version (should see output like version 1.0.2)
+   ```python
+   import azureml.core
 
-
-# Getting started with AML
-
-Learn how to use Azure Machine Learning services for experimentation and model management.
-
-[machine-learning][machine-learning] > [machine-learning-service][machine-learning-service] > [samples][samples] > [aml-notebooks][aml-notebooks]
-
-Clone repo:
+   print("This notebook was created using version 1.0.2 of the Azure ML SDK")
+   print("You are currently using version", azureml.core.VERSION, "of the Azure ML SDK")
    ```
-   git clone https://github.com/Azure/MachineLearningNotebooks.git
+- Insert new cell to see if your subscription is registered with ACI
+   ```python
+   !az provider show -n Microsoft.ContainerInstance -o table
    ```
+   if not, insert new cell and run
+   ```python
+   !az provider register -n Microsoft.ContainerInstance
+   ```
+- Replace default values in second cell and run to set workspace parameters
+   ```python
+   import os
 
-[how-to-use-azureml][how-to-use-azureml] > [machine-learning-pipelines][machine-learning-pipelines] > [pipeline-batch-scoring][pipeline-batch-scoring]
-   - Prerequisites
-      - Azure subscription
-      - Resource Group
-         - Type: ``**<your name>**``
-      - AML workspace
-         - Type: **azure machine learning**
-         - Click: **Machine Learning service workspace** > **Create**
-         - Type: ``<your AML workspace name>``
-         - Select: Subscription: ``<your subscription>``
-         - Select: Resource Group: ``<your resource group>``
-         - Type: Virtual machine name: ``<your vm name>``
-         - Select: Region: ``<your region>``
-         - Type: Username: ``<your user name>``
-         - Type: Password: ``<your password>``
-         - Click: **Create**
-   - Set up [DSVM][setup-dsvm] (bootstrap environment)
+   subscription_id = os.getenv("SUBSCRIPTION_ID", default="<my-subscription-id>")
+   resource_group = os.getenv("RESOURCE_GROUP", default="<my-resource-group>")
+   workspace_name = os.getenv("WORKSPACE_NAME", default="<my-workspace-name>")
+   workspace_region = os.getenv("WORKSPACE_REGION", default="eastus2")
+   ```
+- Run fourth cell to create new workspace
+- Run: fifth cell to create CPU cluster
+- Run: sixth cell to create GPU cluster (optional)
 
-      - Setup DSVM
-         - SSH into DSVM
-         - Clone repo
-            - Type **git clone https://github.com/Azure/MachineLearningNotebooks.git**
-         - Activate Conda environment
-            - Type **conda activate py36**
-         - Verify SDK access and version
-            - Type: **python**
-            ```python
-            import azureml.core
-            print(azureml.core.VERSION)
-            ```
-            - Should see something like: **output: 1.0.2**
-         - Install additional libraries
-            - Type: **conda install -y matplotlib tqdm scikit-learn**
-      - Connect to Jupyter notebook
-         - Setup port forwarding (to access Jupyter Notebook locally)
-            - Expand: **Connection** > **SSH** > **Tunnels**
-            - Type: Source port: **8000**
-            - Type: Destination: **localhost:8000**
-            - Click: **Add** > **Save**
-            - SSH into DSVM
-         - Browse: https://localhost:8000
-         - Login using VM's username/password
+## Create and Deploy Model Using Jupyter Notebook on Dev Environment
+- Expand: **how-to-use-azureml** > **machine-learning-pipelines** > **pipeline-batch-scoring**
+- Click:  **pipeline-batch-scoring.ipynb**
+- Run each cell individually (the first experiment run takes about 20 minutes, the second about 11 minutes, then drops to about 5 seconds)
 
-      - Run batch scoring notebook
-         - Click: **AzureML** > **how-to-use-azureml** > **machine-learning-pipelines** > **pipeline-batch-scoring** > **pipeline-batch-scoring.ipynb**
-         - Run: first cell for imports
-         - Run: second cell for settings
-         - Run: third cell to create data store
-         - Run: fourth cell to create default data store
-         - Run: fifth cell to configure data references
-         - Run: sixth cell to create and attach compute targets
-         - Run: seventh cell to create directory for model
-         - Run: eighth cell to download model as tar
-         - Run: ninth cell to register model with workspace
-         - Run: tenth cell to specify environment to run the script
-         - Run: eleventh cell to specify parameters
-         - Run: twelfth cell to create the pipeline step
-         - Run: thirteenth cell to run the pipeline
-         - Run: fourteenth cell to monitor the run
-         - Run: fifteenth cell to wait for completion (takes about 20 minutes)
-         - Run: sixteenth cell to download output
-         - Run: seventeenth cell to sample the output
-         - Run: eighteenth cell to create a published pipeline
-         - Run: nineteenth cell to get AAD token
-         - Run: twentieth cell to run published pipeline (with specified batch size)
-         - Run: twenty first cell to monitor the new run (takes about 11 minutes)
-      - Call from REST Client
-         - Open: RESTClient Firefox plugin
-         - Method: POST
-         - URL: ``<your endpoint>``
-         - Header: Key: **Authorization**, Value: ``<your bearer token>``
-         - Header: Key: **Content-Type**, Value: **application/json**
-         - Body: {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
-         - Click: **Send**
-      - Schedule using ADF
-         - Create ADF
-            - Browse: **portal.azure.com**
-            - Select: ``<your resource group>``
-            - Click: **+ Add**
-            - Type: **data factory**
-            - Click: **Data Factory** > **Create**
-            - Type: Name: ``<your name>``
-            - Select: Subscription: ``<your subscription>``
-            - Select: Resource Group: **Use existing**
-            - Select: ``<your resource group>``
-            - Select: Version: **V2**
-            - Select: Location: **East US**
-            - Click: **Create**
-         - Configure ADF
-            - Click: **Author & Monitor**
-            - Click: **Create pipeline**
-            - Expand: **General**
-            - Drag: **Web**
-            - Click: **Settings**
-            - Paste: URL: ``<your endpoint>``
-            - Select: Method: **POST**
-            - Click: Headers: + New: NAME: **Authorization**, VALUE: ``<your bearer token>``
-            - Click: Headers: + New: NAME: **Content-Type**, VALUE: **application/json**
-            - Paste: Body: {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
-            - Click: **Validate**
-            - Click: **Publish All**
-            - Click: **Trigger** > **Trigger Now**
-      - Schedule using [AzureFunction][functions-create-first-function-python]
-         - Prerequisites
-            - To build and test locally
-               - Install [Python 3.6][install-python]
-               - Install [Azure Functions Core Tools]
-                  - Install [.NET Core 2.x SDK for Windows][.NET Core 2.x SDK for Windows]
-                  - Install [Node.js][Node.js]
-                  - Install Core Tools package
-                      npm install -g azure-functions-core-tools
-            - to publish and run in Azure
-               - Install the [Azure CLI][Azure CLI]
-          - Create and activate a virtual environment
+## Test using REST Client
+- Open: RESTClient Firefox plugin
+- Method: POST
+- URL: ``<your endpoint>``
+- Header: Key: **Authorization**, Value: ``<your bearer token>``
+- Header: Key: **Content-Type**, Value: **application/json**
+- Body: {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
+- Click: **Send**
+
+## Schedule using ADF
+- Create ADF
+   - Browse: **portal.azure.com**
+   - Select: ``<your resource group>``
+   - Click: **+ Add**
+   - Type: **data factory**
+   - Click: **Data Factory** > **Create**
+   - Type: Name: ``<your name>``
+   - Select: Subscription: ``<your subscription>``
+   - Select: Resource Group: **Use existing**
+   - Select: ``<your resource group>``
+   - Select: Version: **V2**
+   - Select: Location: **East US**
+   - Click: **Create**
+- Configure ADF
+   - Click: **Author & Monitor**
+   - Click: **Create pipeline**
+   - Expand: **General**
+   - Drag: **Web**
+   - Click: **Settings**
+   - Paste: URL: ``<your endpoint>``
+   - Select: Method: **POST**
+   - Click: Headers: + New: NAME: **Authorization**, VALUE: ``<your bearer token>``
+   - Click: Headers: + New: NAME: **Content-Type**, VALUE: **application/json**
+   - Paste: Body: {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
+   - Click: **Validate**
+   - Click: **Publish All**
+   - Click: **Trigger** > **Trigger Now**
+   
+## Schedule using [AzureFunction][functions-create-first-function-python]
+- Prerequisites
+   - To build and test locally
+      - Install [Python 3.6][install-python]
+         - Install [Azure Functions Core Tools]
+         - Install [.NET Core 2.x SDK for Windows][.NET Core 2.x SDK for Windows]
+         - Install [Node.js][Node.js]
+         - Install Core Tools package
+            npm install -g azure-functions-core-tools
+         - to publish and run in Azure
+            - Install the [Azure CLI][Azure CLI]
+         - Create and activate a virtual environment
              - Type:
                 ```powershell
                 py -3.6 -m venv .env
