@@ -184,15 +184,6 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
 - Click:  **pipeline-batch-scoring.ipynb**
 - Run each cell individually (the first experiment run takes about 20 minutes, the second about 11 minutes, then drops to about 5 seconds)
 
-## Test using REST Client
-- Open: RESTClient Firefox plugin
-- Method: POST
-- URL: ``<your endpoint>``
-- Header: Key: **Authorization**, Value: ``<your bearer token>``
-- Header: Key: **Content-Type**, Value: **application/json**
-- Body: {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
-- Click: **Send**
-
 ## Schedule using ADF
 - Create ADF
    - Browse: **portal.azure.com**
