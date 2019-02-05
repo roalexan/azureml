@@ -118,7 +118,6 @@ or
 - Run fourth cell to create new workspace
 
 ### Using Portal (no hiccups)
-
 - Browse: **portal.azure.com**
 - Select: ``<your resource group>``
 - Click: **+ Add**
@@ -128,7 +127,6 @@ or
 - Select: Subscription: ``<your subscription>``
 - Select: Resource group: ``<your resource group>``
 - Select: Location: ``<your location>``
-
 - Replace default values in second cell and run to set workspace parameters
    ```python
    import os
@@ -140,7 +138,6 @@ or
    ```
 
 ### Using Portal (hiccup - policy requires "Secure Transfer Required" for Storage Accounts)
-
 - Browse: **portal.azure.com**
 - Select: ``<your resource group>``
 - Click: **+ Add**
@@ -167,7 +164,6 @@ or
 ```
 az group deployment create -g ``<your resource group>`` --subscription ``<your subscription id>`` --template-file template.json --parameters @parameters.json
 ```
-
 - Replace default values in second cell and run to set workspace parameters
    ```python
    import os
