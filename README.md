@@ -9,6 +9,7 @@
 - AML = Azure Machine Learning
 - ACI = Azure Container Instance
 - ARM = Azure Resource Manager
+- AKS = Azure Kubernetes Service
 
 ## Create Dev Environment
 
@@ -29,7 +30,7 @@
 - Select: ``your resource group``
 - Click: **+ Add**
 - Type: **dsvm**
-- Select: **Data Science Virtual Machine - Windows 2016**
+- Click: **Data Science Virtual Machine - Windows 2016** > **Create**
 - Select: Subscription: ``<your subscription>``
 - Select: Resource Group: ``<your resource group>``
 - Type: Virtual machine name: ``<your vm name>``
@@ -61,6 +62,7 @@ or
 ### On Windows DSVM
 - Login
   - Click: ``<your vm>`` > **Connect**
+  - Click: **Download RDP File**
   - Save: locally
   - Double click: ``<your RDP file>``
   - Click: **OK** > **Connect**
@@ -69,7 +71,7 @@ or
   - Type: User name: ``<your user name>``
   - Type: Password: ``<your password>``
   - Click: **OK** > **Yes**
-- Double click: **Jupyter**
+- Double click: **Jupyter** (takes a minute)
 
 or
 
@@ -94,19 +96,19 @@ or
    print("This notebook was created using version 1.0.2 of the Azure ML SDK")
    print("You are currently using version", azureml.core.VERSION, "of the Azure ML SDK")
    ```
+- Insert new cell to login
+   ```python
+   !az login
+   ```
 - Insert new cell to see if your subscription is registered with ACI
    ```python
    !az provider show -n Microsoft.ContainerInstance -o table
    ```
-   if not, insert new cell and run
+- If not registered, insert new cell to register your subscription with ACI
    ```python
    !az provider register -n Microsoft.ContainerInstance
    ```
-
-## Create AML workspace
-
-### Using Jupyter Notebook on Dev Environment
-- Replace default values in second cell and run to set workspace parameters
+- Replace default values in next cell and run to set workspace parameters
    ```python
    import os
 
@@ -115,7 +117,12 @@ or
    workspace_name = os.getenv("WORKSPACE_NAME", default="<my-workspace-name>")
    workspace_region = os.getenv("WORKSPACE_REGION", default="eastus2")
    ```
-- Run fourth cell to create new workspace
+
+## Create AML workspace
+
+### Using Jupyter Notebook on Dev Environment
+
+- Run next cell to create new workspace
 
 ### Using Portal (no hiccups)
 - Browse: **portal.azure.com**
@@ -127,15 +134,6 @@ or
 - Select: Subscription: ``<your subscription>``
 - Select: Resource group: ``<your resource group>``
 - Select: Location: ``<your location>``
-- Replace default values in second cell and run to set workspace parameters
-   ```python
-   import os
-
-   subscription_id = os.getenv("SUBSCRIPTION_ID", default="<my-subscription-id>")
-   resource_group = os.getenv("RESOURCE_GROUP", default="<my-resource-group>")
-   workspace_name = os.getenv("WORKSPACE_NAME", default="<my-workspace-name>")
-   workspace_region = os.getenv("WORKSPACE_REGION", default="eastus2")
-   ```
 
 ### Using Portal (hiccup - policy requires "Secure Transfer Required" for Storage Accounts)
 - Browse: **portal.azure.com**
@@ -147,7 +145,7 @@ or
 - Select: Subscription: ``<your subscription>``
 - Select: Resource group: ``<your resource group>``
 - Select: Location: ``<your location>``
-- Click: **Automation options**
+- Click: **Automation options** (Don't click **Create**)
 - Click: **Download** > **Save As** > ``<your local folder>``
 - Copy and paste zip file to your DSVM (drag and drop won't work, but copy and paste will)
 - Extract contents of zip file
@@ -160,29 +158,55 @@ or
 	"supportsHttpsTrafficOnly": true
 },
 ```
-- Run: 
+- From command prompt, run: 
 ```
 az group deployment create -g ``<your resource group>`` --subscription ``<your subscription id>`` --template-file template.json --parameters @parameters.json
 ```
-- Replace default values in second cell and run to set workspace parameters
-   ```python
-   import os
-
-   subscription_id = os.getenv("SUBSCRIPTION_ID", default="<my-subscription-id>")
-   resource_group = os.getenv("RESOURCE_GROUP", default="<my-resource-group>")
-   workspace_name = os.getenv("WORKSPACE_NAME", default="<my-workspace-name>")
-   workspace_region = os.getenv("WORKSPACE_REGION", default="eastus2")
-   ```
 
 ### Create Compute Cluster Using Jupyter Notebook on Dev Environment
 
-- Run: fifth cell to create CPU cluster
-- Run: sixth cell to create GPU cluster (optional)
+- Run: next cell to create CPU cluster
+- Run: next cell to create GPU cluster (optional)
 
 ## Create and Deploy Model Using Jupyter Notebook on Dev Environment
 - Expand: **how-to-use-azureml** > **machine-learning-pipelines** > **pipeline-batch-scoring**
 - Click:  **pipeline-batch-scoring.ipynb**
-- Run each cell individually (the first experiment run takes about 20 minutes, the second about 11 minutes, then drops to about 5 seconds)
+- Run each cell individually (the first experiment run takes about 20 minutes, then drops to a few seconds)
+
+## Test calling REST AKS AML endpoint
+- Insert new cell to set subscription id
+   ```python
+   # https://docs.microsoft.com/en-us/cli/azure/account?view=azure-cli-latest
+   !az account set -s "{ws.subscription_id}"
+   !az account show
+   ```
+- Insert new cell to create service principal
+   ```python
+   # https://docs.microsoft.com/en-us/cli/azure/ad/sp?view=azure-cli-latest
+   !az ad sp create-for-rbac --name ``<your app name>``
+   ```
+- Insert new cell to generate token
+   ```python
+   # https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli?view=azure-cli-latest
+   from azure.common.credentials import ServicePrincipalCredentials
+
+   # "client_id" is the value for "appId" show above. you can see it the registered app on AAD in the portal
+   # the "secret" is the value for "password" shown above. You can manage passwords for registered apps on AAD in the portal
+   # the "tenant" is show above. It's also known as the "directory id" and you can get it on AAD in the portal and clicking "properties" 
+   credentials = ServicePrincipalCredentials(client_id='{appId}',
+                                             secret='{password}',
+                                             tenant='{tenant}')
+   api_key = credentials.token['access_token']
+   aad_token = {'Authorization':('Bearer '+ api_key)}
+   ```
+- Insert new cell to call endpoint
+   ```python
+   response = requests.post(rest_endpoint, 
+                         headers=aad_token, 
+                         json={"ExperimentName": "batch_scoring",
+                               "ParameterAssignments": {"param_batch_size": 50}})
+   run_id = response.json()["Id"]
+   ```
 
 ## Schedule using ADF
 - Create ADF
