@@ -1,4 +1,4 @@
-# Creating real-time scoring pipeline
+# Options for Scheduling a Batch Scoring Pipeline
 
 ## Prerequisites
 - An Azure subscription
