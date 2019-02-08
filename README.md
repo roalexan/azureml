@@ -255,62 +255,77 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
    
    
 ## Schedule using [AzureFunction][functions-create-first-function-python]
-- Prerequisites
-   - To build and test locally
-      - Install [Python 3.6][install-python]
-         - Install [Azure Functions Core Tools]
-         - Install [.NET Core 2.x SDK for Windows][.NET Core 2.x SDK for Windows]
-         - Install [Node.js][Node.js]
-         - Install Core Tools package
-            npm install -g azure-functions-core-tools
-         - to publish and run in Azure
-            - Install the [Azure CLI][Azure CLI]
-         - Create and activate a virtual environment
-             - Type:
-                ```powershell
-                py -3.6 -m venv .env
-                .env\scripts\activate
-                ```
-         - Create a local Functions project
-            - Type: func init MyFunctionProj
-            - Mouse down and select: **python (preview)**
-            - cd MyFunctionProj
-         - Echo name function
-            - Create a function
-               - Type: func new
-               - Choose template: **HTTP trigger**
-               - Choose Function name: **HTTP Trigger**
-            - Run the functions locally
-               - Type: **func host start** (remember to do this in the function projects folder)
-               - Copy URL and paste in browser:
-               ```
-               http://localhost:7071/api/HttpTrigger?name=<yourname>
-               ```
-            - Deploy to Azure
-               - Type: **az login**
-               - Create a Resource Group
-               - Create an Azure Storage account
-                  Type:
-                  ```
-                  az storage account create --name <storage name> --location <location> --resource-group <resource group name> --sku Standard_LRS
-                  ```
-              - Create a Python function app running on Linux
-                 Type:
-                 ```
-                 az functionapp create --resource-group myResourceGroup --os-type Linux \
-                 --consumption-plan-location westeurope  --runtime python \
-                 --name <app_name> --storage-account  <storage_name>
-                 ```
-              - Deploy the function app project
-                 Type:
-                 ```
-                 func azure functionapp publish <app_name>
-                 ```
-              - Test the function
-                 Browse:
-                 ```
-                 https://<app_name>.azurewebsites.net/api/MyHttpTrigger?name=<yourname>
-                 ```
+- Setup Local Build Environment
+   - Install [Python 3.6][install-python]
+   - Install [Azure Functions Core Tools]
+   - Install [.NET Core 2.x SDK for Windows][.NET Core 2.x SDK for Windows]
+   - Install [Node.js][Node.js]
+   - Install Core Tools package
+      ```
+      npm install -g azure-functions-core-tools
+	  ```
+   - Install the [Azure CLI][Azure CLI] (needed to publish and run in Azure)
+   - Type from command prompt: (Create and activate a virtual environment)
+      ```powershell
+      py -3.6 -m venv .env
+      .env\scripts\activate
+      ```
+- Create a Local Functions Project (contains your functions)
+   - Type:
+      ```
+	  func init FunctionsProject
+	  ```
+   - Mouse down and select: **python (preview)**
+   - Click: **Enter**
+- Create and Start a Local Test EchoName Function
+   - Change directory: **FunctionsProject**
+   - Type: (create a new function)
+      ```
+	  func new
+	  ```
+   - Choose template: **HTTP trigger**
+   - Type: Function name: **EchoNameFunction**
+   - Click: **Enter**
+   - Type: **func host start** (start local functions)
+   - Copy and paste URL in browser, and replace <yourname> with a name of your choosing:
+      ```
+      http://localhost:7071/api/EchoNameFunction?name=<yourname>
+      ```
+- Deploy and Test EchoName Function on Azure
+   - Type:
+      ```
+	  az login
+	  ```
+   - Type: (set your subscription id)
+      ```
+	  az account set -s ``<your subscription id>``
+	  ```
+   - Type: (show account)
+      ```
+	  az account show
+	  ```
+   - Type: (create a storage account)
+      ```
+      az storage account create --name <storage name> --location <location> --resource-group <resource group name> --sku Standard_LRS --https-only true
+      ```
+   - Type: (Create a Python function app running on Linux. app_name must be globally unique - it will contains the functions)
+      ```
+      az functionapp create --resource-group <resource group> --os-type Linux --consumption-plan-location <location> --runtime python --name <app_name> --storage-account <storage_name>
+      ```
+   - Type: (Deploy the function app project)
+      ```
+      func azure functionapp publish <app_name>
+      ```
+   - Expand: ``<function app>`` > **Functions** > **EchoNameFunction**
+   - Click: **Get function URL** > **Copy**
+   - Paste URL into browser, and add:
+      ```
+	  ?name=<your name>
+	  ```   
+   
+      ```
+      https://<app_name>.azurewebsites.net/api/MyHttpTrigger?name=<yourname>
+      ```
          - CallBatchScoring function
             - Create a function
                - Type: func new
@@ -353,6 +368,8 @@ Services that support managed identities for Azure resources
 https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/services-support-msi
 Azure Data Factory service identity
 https://docs.microsoft.com/en-us/azure/data-factory/data-factory-service-identity
+Azure Storage Account CLI
+https://docs.microsoft.com/en-us/cli/azure/storage/account?view=azure-cli-latest
 
 <!-- links -->
 
