@@ -171,7 +171,7 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
 ## Create and Deploy Model Using Jupyter Notebook on Dev Environment
 - Expand: **how-to-use-azureml** > **machine-learning-pipelines** > **pipeline-batch-scoring**
 - Click:  **pipeline-batch-scoring.ipynb**
-- Run each cell individually (the first experiment run takes about 20 minutes, then drops to a few seconds)
+- Run each cell individually (the first experiment run takes about 20 minutes, subsequent runs take a few seconds)
 
 ## Test calling REST AKS AML endpoint
 - Insert new cell to set subscription id
@@ -222,6 +222,11 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
    - Select: Version: **V2**
    - Select: Location: **East US**
    - Click: **Create**
+- Authorize ADF access to AML workspace using Managed Service Identity
+	-Click on ``<your AML workspace>`` > ``<Access control (IAM)>`` > **Add role assignment**
+	-Select: Role: **Contributor**
+	-Type: Select: ``<your ADF name>``
+	-Click: ``<your ADF name>`` > **Save**
 - Configure ADF
    - Click: **Author & Monitor**
    - Click: **Create pipeline**
@@ -233,9 +238,21 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
    - Click: Headers: + New: NAME: **Authorization**, VALUE: ``<your bearer token>``
    - Click: Headers: + New: NAME: **Content-Type**, VALUE: **application/json**
    - Paste: Body: {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
+   - Expand: **Advanced**
+   - Select: **MSI**
+   - Type: Resource: **https://management.azure.com/**
    - Click: **Validate**
    - Click: **Publish All**
    - Click: **Trigger** > **Trigger Now**
+- Add Trigger
+   - Click: **Trigger** > **New/Edit**
+   - Select: Choose trigger... > **+ New**
+   - Type: Name: ``<your trigger name>``
+   - Select: **Schedule**
+   - Type: Start Date (UTC): ``<your start date>``
+   - Type: Recurrence: Every: ``<your interval>``
+   - Click: **Next** > **Finish** > **Publish All**
+   
    
 ## Schedule using [AzureFunction][functions-create-first-function-python]
 - Prerequisites
@@ -323,6 +340,19 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
 
                return func.HttpResponse(r.text)
                ```
+			   
+## Schedule using LogicApps
+- TODO
+
+## Links
+Web activity in Azure Data Factory
+https://docs.microsoft.com/en-us/azure/data-factory/control-flow-web-activity
+What is managed identities for Azure resources?
+https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
+Services that support managed identities for Azure resources
+https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/services-support-msi
+Azure Data Factory service identity
+https://docs.microsoft.com/en-us/azure/data-factory/data-factory-service-identity
 
 <!-- links -->
 
