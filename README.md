@@ -277,7 +277,7 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
 	  ```
    - Mouse down and select: **python (preview)**
    - Click: **Enter**
-- Create and Start a Local Test EchoName Function
+- Create, Deploy, and Test EchoName Function Locally
    - Change directory: **FunctionsProject**
    - Type: (create a new function)
       ```
@@ -321,40 +321,59 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
    - Paste URL into browser, and add:
       ```
 	  ?name=<your name>
-	  ```   
-   
+	  ```
+- Create, Deploy, and Test BatchScoring Function Locally
+   - Change directory: **FunctionsProject**
+   - Type: (create a new function)
       ```
-      https://<app_name>.azurewebsites.net/api/MyHttpTrigger?name=<yourname>
+	  func new
+	  ```
+   - Choose template: **HTTP trigger**
+   - Type: Function name: **BatchScoringFunction**
+   - Click: **Enter**
+   - Type: (Add requests library)
       ```
-         - CallBatchScoring function
-            - Create a function
-               - Type: func new
-               - Choose template: **HTTP trigger**
-               - Choose Function name: **CallBatchScoring**
-            - Add requests library
-               - Type:
-                  ```
-                  pip install requests
-                  ```
-            - Run the functions locally
-               - Type: **func host start** (remember to do this in the function projects folder)
-               - Copy URL and paste in browser:
-               ```
-               http://localhost:7071/api/CallBatchScoring?name=<yourname>
-               ```
-            - Edit __init__.py
-               ```
-               def main(req: func.HttpRequest) -> func.HttpResponse:
-               logging.info('Python HTTP trigger function processed a request.')
+      pip install requests
+      ```
+   - Edit __init__.py
+      ```
+      def main(req: func.HttpRequest) -> func.HttpResponse:
+      logging.info('Python HTTP trigger function processed a request.')
 
-               url = "<your endpoint>"
-               headers = {"Content-Type": "application/json",
-                   "Authorization": "<your token>"}
-               body = {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
-               r = requests.post(url, data=body, headers=headers)
+      url = "<your endpoint>"
+      headers = {"Content-Type": "application/json",
+	      "Authorization": "<your token>"}
+      body = {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
+      r = requests.post(url, data=body, headers=headers)
 
-               return func.HttpResponse(r.text)
-               ```
+      return func.HttpResponse(r.text)
+      ```
+   - Type: **func host start** (start local functions)
+   - Copy and paste URL in browser:
+      ```
+	  http://localhost:7071/api/BatchScoringFunction
+      ```
+- Deploy and Test EchoName Function on Azure
+   - TBD
+- Pipeline Scheduling
+   ```
+   from azureml.pipeline.core.schedule import ScheduleRecurrence, Schedule
+
+   # Schedule pipeline
+   SCHED_FREQUENCY = "<your time unit>"
+   SCHED_INTERVAL = <number of time units>
+   RESOURCE_GROUP_NAME = "<your resource group name>"
+   experiment_name = "<your experiment name>"
+   recurrence = ScheduleRecurrence(frequency=SCHED_FREQUENCY, interval=SCHED_INTERVAL)
+   schedule = Schedule.create(
+       workspace=ws,
+       name="{}_sched".format(RESOURCE_GROUP_NAME),
+       pipeline_id=published_id,
+       experiment_name=experiment_name,
+       recurrence=recurrence,
+       description="{}_sched".format(RESOURCE_GROUP_NAME),
+   )
+   ```
 			   
 ## Schedule using LogicApps
 - TODO
