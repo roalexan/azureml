@@ -415,7 +415,7 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
           recurrence=recurrence,
           description="{}_sched".format(RESOURCE_GROUP_NAME),
       )
-   ```
+      ```
    - Disable the schedule (if needed)
       ```
 	  schedule.disable()
