@@ -428,25 +428,25 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
 - TODO
 
 ## Links
-[Web activity in Azure Data Factory](https://docs.microsoft.com/en-us/azure/data-factory/control-flow-web-activity)
-[What is managed identities for Azure resources?](
+-[Web activity in Azure Data Factory](https://docs.microsoft.com/en-us/azure/data-factory/control-flow-web-activity)
+-[What is managed identities for Azure resources?](
 https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview)
-Services that support managed identities for Azure resources
-https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/services-support-msi
-Azure Data Factory service identity
-https://docs.microsoft.com/en-us/azure/data-factory/data-factory-service-identity
-Azure Storage Account CLI
-https://docs.microsoft.com/en-us/cli/azure/storage/account?view=azure-cli-latest
-Services that support managed identities for Azure resources
-https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/services-support-msi#azure-services-that-support-managed-service-identity
-Using Managed Service Identity (MSI) with an Azure App Service or an Azure Function
-https://blogs.msdn.microsoft.com/benjaminperkins/2018/06/13/using-managed-service-identity-msi-with-and-azure-app-service-or-an-azure-function/ 
-New-AzureADServiceAppRoleAssignment
-https://docs.microsoft.com/en-us/powershell/module/azuread/new-azureadserviceapproleassignment?view=azureadps-2.0
-Work with Azure Functions Core Tools
-https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local
-How to use managed identities for App Service and Azure Functions
-https://docs.microsoft.com/en-us/azure/app-service/overview-managed-identity?toc=%2fazure%2fazure-functions%2ftoc.json
+-[Services that support managed identities for Azure resources](
+https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/services-support-msi)
+-[Azure Data Factory service identity](
+https://docs.microsoft.com/en-us/azure/data-factory/data-factory-service-identity)
+-[Azure Storage Account CLI](
+https://docs.microsoft.com/en-us/cli/azure/storage/account?view=azure-cli-latest)
+-[Services that support managed identities for Azure resources](
+https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/services-support-msi#azure-services-that-support-managed-service-identity)
+-[Using Managed Service Identity (MSI) with an Azure App Service or an Azure Function](
+https://blogs.msdn.microsoft.com/benjaminperkins/2018/06/13/using-managed-service-identity-msi-with-and-azure-app-service-or-an-azure-function/)
+-[New-AzureADServiceAppRoleAssignment](
+https://docs.microsoft.com/en-us/powershell/module/azuread/new-azureadserviceapproleassignment?view=azureadps-2.0)
+-[Work with Azure Functions Core Tools](
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)
+-[How to use managed identities for App Service and Azure Functions](
+https://docs.microsoft.com/en-us/azure/app-service/overview-managed-identity?toc=%2fazure%2fazure-functions%2ftoc.json)
 
 <!-- links -->
 
