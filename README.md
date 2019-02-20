@@ -124,6 +124,8 @@ or
 
 - Run next cell to create new workspace
 
+or
+
 ### Using Portal (no hiccups)
 - Browse: **portal.azure.com**
 - Select: ``<your resource group>``
@@ -134,6 +136,8 @@ or
 - Select: Subscription: ``<your subscription>``
 - Select: Resource group: ``<your resource group>``
 - Select: Location: ``<your location>``
+
+or
 
 ### Using Portal (hiccup - policy requires "Secure Transfer Required" for Storage Accounts)
 - Browse: **portal.azure.com**
@@ -424,10 +428,9 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
 - TODO
 
 ## Links
-Web activity in Azure Data Factory
-https://docs.microsoft.com/en-us/azure/data-factory/control-flow-web-activity
-What is managed identities for Azure resources?
-https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
+[Web activity in Azure Data Factory](https://docs.microsoft.com/en-us/azure/data-factory/control-flow-web-activity)
+[What is managed identities for Azure resources?](
+https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview)
 Services that support managed identities for Azure resources
 https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/services-support-msi
 Azure Data Factory service identity
