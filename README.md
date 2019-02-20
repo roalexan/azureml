@@ -253,7 +253,6 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
    - Type: Recurrence: Every: ``<your interval>``
    - Click: **Next** > **Finish** > **Publish All**
    
-   
 ## Schedule using [AzureFunction][functions-create-first-function-python]
 - Setup Local Build Environment
    - Install [Python 3.6][install-python]
@@ -398,7 +397,7 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
 	- goto function app
 	- click **Platform features** > **All Settings** > **Authentication/Authorization**
 	- toggle: App Service Authentication: **On**
-- Pipeline Scheduling
+## Schedule using Pipeline Scheduling
    - Create a new schedule
       ```
       from azureml.pipeline.core.schedule import ScheduleRecurrence, Schedule
@@ -417,7 +416,7 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
           description="{}_sched".format(RESOURCE_GROUP_NAME),
       )
    ```
-   Disable the schedule (as needed)
+   Disable the schedule (if needed)
       ```
 	  schedule.disable()
       ```
