@@ -419,10 +419,7 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
    Disable the schedule (if needed)
       ```
 	  schedule.disable()
-      ```
-   
-   
-			   
+      ```		   
 ## Schedule using LogicApps
 - TODO
 
