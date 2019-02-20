@@ -223,10 +223,10 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
    - Select: Location: **East US**
    - Click: **Create**
 - Authorize ADF access to AML workspace using Managed Service Identity
-	-Click on ``<your AML workspace>`` > ``<Access control (IAM)>`` > **Add role assignment**
-	-Select: Role: **Contributor**
-	-Type: Select: ``<your ADF name>``
-	-Click: ``<your ADF name>`` > **Save**
+   -Click on ``<your AML workspace>`` > ``<Access control (IAM)>`` > **Add role assignment**
+   -Select: Role: **Contributor**
+   -Type: Select: ``<your ADF name>``
+   -Click: ``<your ADF name>`` > **Save**
 - Configure ADF
    - Click: **Author & Monitor**
    - Click: **Create pipeline**
@@ -265,26 +265,36 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
       npm install -g azure-functions-core-tools
 	  ```
    - Install the [Azure CLI][Azure CLI] (needed to publish and run in Azure)
-   - Type from command prompt: (Create and activate a virtual environment)
-      ```powershell
-      py -3.6 -m venv .env
+   - Open a command prompt
+   - Type (set variables)
+      set SUBSCRIPTION_ID=``<your subscription id>``
+      set RESOURCE_GROUP=``<your resource group>``
+      set STORAGE_ACCOUNT=``<your storage account>``
+      set APP_PLAN=``<your app plan>``
+      set FUNCTION_APP=``<your function app>``
+   - Type (create and activate a virtual environment)
+      ```
+      py -3.6 -m venv .env (Create and activate a virtual environment)
       .env\scripts\activate
       ```
 - Create a Local Functions Project (contains your functions)
    - Type:
       ```
-	  func init FunctionsProject
+	  func init %FUNCTION_APP%
 	  ```
    - Mouse down and select: **python (preview)**
    - Click: **Enter**
 - Create, Deploy, and Test EchoName Function Locally
-   - Change directory: **FunctionsProject**
+   - Type:
+      ```
+	  cd %FUNCTION_APP%
+	  ```
    - Type: (create a new function)
       ```
 	  func new
 	  ```
    - Choose template: **HTTP trigger**
-   - Type: Function name: **EchoNameFunction**
+   - Type: Function name: **EchoName**
    - Click: **Enter**
    - Type: **func host start** (start local functions)
    - Copy and paste URL in browser, and replace <yourname> with a name of your choosing:
@@ -298,25 +308,37 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
 	  ```
    - Type: (set your subscription id)
       ```
-	  az account set -s ``<your subscription id>``
+	  az account set --subscription %SUBSCRIPTION_ID%
 	  ```
    - Type: (show account)
       ```
 	  az account show
 	  ```
+   - Type: (create a resource group)
+      ```
+	  az group create --name %RESOURCE_GROUP% --location eastus
+	  ```
    - Type: (create a storage account)
       ```
-      az storage account create --name <storage name> --location <location> --resource-group <resource group name> --sku Standard_LRS --https-only true
+      az storage account create --name %STORAGE_ACCOUNT% --location eastus --resource-group %RESOURCE_GROUP% --sku Standard_LRS
       ```
-   - Type: (Create a Python function app running on Linux. app_name must be globally unique - it will contains the functions)
+   - Type: (create an app service plan)
       ```
-      az functionapp create --resource-group <resource group> --os-type Linux --consumption-plan-location <location> --runtime python --name <app_name> --storage-account <storage_name>
+	  az appservice plan create -g %RESOURCE_GROUP% -n %APP_PLAN% --is-linux --number-of-workers 4 --sku S1
+	  ```
+   - Type: (Create a Python function app running on Linux that will contain the functions. This uses a consumption plan)
+      ```
+      az functionapp create --resource-group %RESOURCE_GROUP% --os-type Linux --consumption-plan-location eastus --runtime python --name %FUNCTION_APP% --storage-account %STORAGE_ACCOUNT%
+      ```
+   - Type: (Create a Python function app running on Linux that will contain the functions. This uses an existing app service plan)
+      ```
+      az functionapp create --resource-group %RESOURCE_GROUP% --os-type Linux --plan %APP_PLAN% --runtime python --name %FUNCTION_APP% --storage-account %STORAGE_ACCOUNT% --deployment-container-image-name azure-functions-python3.6:2.0
       ```
    - Type: (Deploy the function app project)
       ```
-      func azure functionapp publish <app_name>
+      func azure functionapp publish %FUNCTION_APP%
       ```
-   - Expand: ``<function app>`` > **Functions** > **EchoNameFunction**
+   - Expand: ``<function app>`` > **Functions** > **EchoName**
    - Click: **Get function URL** > **Copy**
    - Paste URL into browser, and add:
       ```
@@ -353,27 +375,54 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
       ```
 	  http://localhost:7071/api/BatchScoringFunction
       ```
-- Deploy and Test EchoName Function on Azure
-   - TBD
-- Pipeline Scheduling
-   ```
-   from azureml.pipeline.core.schedule import ScheduleRecurrence, Schedule
+- Deploy and Test BatchScoring Function on Azure
+   - Edit __init__.py
+      ```
+      import logging
+      import requests
+      import azure.functions as func
 
-   # Schedule pipeline
-   SCHED_FREQUENCY = "<your time unit>"
-   SCHED_INTERVAL = <number of time units>
-   RESOURCE_GROUP_NAME = "<your resource group name>"
-   experiment_name = "<your experiment name>"
-   recurrence = ScheduleRecurrence(frequency=SCHED_FREQUENCY, interval=SCHED_INTERVAL)
-   schedule = Schedule.create(
-       workspace=ws,
-       name="{}_sched".format(RESOURCE_GROUP_NAME),
-       pipeline_id=published_id,
-       experiment_name=experiment_name,
-       recurrence=recurrence,
-       description="{}_sched".format(RESOURCE_GROUP_NAME),
-   )
+      def main(req: func.HttpRequest) -> func.HttpResponse:
+         logging.info('Python HTTP trigger function processed a request..')    
+         url = "<your function url>"
+         headers = {"Content-Type": "application/json"}
+         body = {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
+         try:       
+            response = str(requests.post(url, 
+               headers=headers, 
+               json=body))        
+            return func.HttpResponse(response)
+         except Exception as e:
+            return func.HttpResponse("exception: " + str(e))
+      ```
+	- goto function app
+	- click **Platform features** > **All Settings** > **Authentication/Authorization**
+	- toggle: App Service Authentication: **On**
+- Pipeline Scheduling
+   - Create a new schedule
+      ```
+      from azureml.pipeline.core.schedule import ScheduleRecurrence, Schedule
+
+      SCHED_FREQUENCY = "<your time unit>"
+      SCHED_INTERVAL = <number of time units>
+      RESOURCE_GROUP_NAME = "<your resource group name>"
+      experiment_name = "<your experiment name>"
+      recurrence = ScheduleRecurrence(frequency=SCHED_FREQUENCY, interval=SCHED_INTERVAL)
+      schedule = Schedule.create(
+          workspace=ws,
+          name="{}_sched".format(RESOURCE_GROUP_NAME),
+          pipeline_id=published_id,
+          experiment_name=experiment_name,
+          recurrence=recurrence,
+          description="{}_sched".format(RESOURCE_GROUP_NAME),
+      )
    ```
+   Disable the schedule (as needed)
+      ```
+	  schedule.disable()
+      ```
+   
+   
 			   
 ## Schedule using LogicApps
 - TODO
@@ -389,6 +438,16 @@ Azure Data Factory service identity
 https://docs.microsoft.com/en-us/azure/data-factory/data-factory-service-identity
 Azure Storage Account CLI
 https://docs.microsoft.com/en-us/cli/azure/storage/account?view=azure-cli-latest
+Services that support managed identities for Azure resources
+https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/services-support-msi#azure-services-that-support-managed-service-identity
+Using Managed Service Identity (MSI) with an Azure App Service or an Azure Function
+https://blogs.msdn.microsoft.com/benjaminperkins/2018/06/13/using-managed-service-identity-msi-with-and-azure-app-service-or-an-azure-function/ 
+New-AzureADServiceAppRoleAssignment
+https://docs.microsoft.com/en-us/powershell/module/azuread/new-azureadserviceapproleassignment?view=azureadps-2.0
+Work with Azure Functions Core Tools
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local
+How to use managed identities for App Service and Azure Functions
+https://docs.microsoft.com/en-us/azure/app-service/overview-managed-identity?toc=%2fazure%2fazure-functions%2ftoc.json
 
 <!-- links -->
 
