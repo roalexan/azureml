@@ -239,7 +239,6 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
    - Click: **Settings**
    - Paste: URL: ``<your endpoint>``
    - Select: Method: **POST**
-   - Click: Headers: + New: NAME: **Authorization**, VALUE: ``<your bearer token>``
    - Click: Headers: + New: NAME: **Content-Type**, VALUE: **application/json**
    - Paste: Body: {"ExperimentName": "batch_scoring", "ParameterAssignments": {"param_batch_size": 50}}
    - Expand: **Advanced**
