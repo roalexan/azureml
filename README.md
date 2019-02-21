@@ -227,10 +227,10 @@ az group deployment create -g ``<your resource group>`` --subscription ``<your s
    - Select: Location: **East US**
    - Click: **Create**
 - Authorize ADF access to AML workspace using Managed Service Identity
-   -Click on ``<your AML workspace>`` > ``<Access control (IAM)>`` > **Add role assignment**
-   -Select: Role: **Contributor**
-   -Type: Select: ``<your ADF name>``
-   -Click: ``<your ADF name>`` > **Save**
+   - Click on ``<your AML workspace>`` > ``<Access control (IAM)>`` > **Add role assignment**
+   - Select: Role: **Contributor**
+   - Type: Select: ``<your ADF name>``
+   - Click: ``<your ADF name>`` > **Save**
 - Configure ADF
    - Click: **Author & Monitor**
    - Click: **Create pipeline**
