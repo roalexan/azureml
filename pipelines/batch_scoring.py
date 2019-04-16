@@ -20,38 +20,19 @@ slim = tf.contrib.slim
 
 print("begin")
 
-'''
-parser = argparse.ArgumentParser(description="Start a tensorflow model serving")
-parser.add_argument('--model_name', dest="model_name", required=True)
-parser.add_argument('--label_dir', dest="label_dir", required=True)
-parser.add_argument('--dataset_path', dest="dataset_path", required=True)
-parser.add_argument('--output_dir', dest="output_dir", required=True)
-parser.add_argument('--batch_size', dest="batch_size", type=int, required=True)
-'''
-
 print("1")
 parser = argparse.ArgumentParser(description="Start a keras model serving")
 print("2")
 parser.add_argument('--input_dir', dest="input_dir", required=True)
 print("3")
-parser.add_argument('--model_dir', dest="model_dir", required=True)
-print("4")
 parser.add_argument('--output_dir', dest="output_dir", required=True)
-print("5")
+print("4")
 
 args = parser.parse_args()
 
-image_size = 299
-num_channel = 3
-
-# create output directory if it does not exist
-#os.makedirs(args.output_dir, exist_ok=True)
 
 print("args.input_dir:", args.input_dir)
-print("args.model_dir:", args.model_dir)
 print("args.output_dir:", args.output_dir)
-
-
 
 
 numpy.random.seed(7)
@@ -94,7 +75,6 @@ json_file = open(out_filename, 'w')
 print("json_file:", json_file)
 for roundedValue in rounded:
     json_file.write(str(roundedValue) + "\n")
-json_file.write("woof")
 json_file.flush() # don't forget to flush, or file contents might not be written!!!
 json_file.close()
 
@@ -102,4 +82,4 @@ json_file.close()
 shutil.copy(out_filename, "./outputs/")
 # Move the processed data out of the blob so that the next run can process the data.
 
-print("end4")
+print("end")
